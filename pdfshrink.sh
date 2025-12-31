@@ -31,6 +31,7 @@ Options:
   -m, --ebook, --medium   Medium quality (ebook)
   -l, --low, --screen     Lowest quality (screen)
   -o, --override          Replace the original file instead of creating a copy
+  -r, --relocate <dir>    Move the compressed file to a specified directory (otherwise file is saved in same directory as the target file)
   --help                  Show this help message and exit
 
 Examples:
@@ -81,6 +82,15 @@ while [[ $# -gt 0 ]]; do
             override=true
             shift
             ;;
+	    -r|--relocate)
+	    if [[ -n "$2" && ! "$2" =~ ^- ]]; then
+		relocate_dir="$2"
+		shift 2
+	    else
+		echo "Error: --relocate requires a directory argument"
+		exit 1
+	    fi
+	    ;;
         -*)
             echo "Unknown option: $1"
             exit 1
@@ -112,6 +122,15 @@ if [[ ! -f "$input_file" ]]; then
     echo "Error: File does not exist: $input_file"
     exit 1
 fi
+
+# let's also validate if the relocated dir exists
+if [[ -n "$relocate_dir" ]]; then
+    if [[ ! -d "$relocate_dir" ]]; then
+        echo "Error: Relocation directory does not exist: $relocate_dir"
+        exit 1
+    fi
+fi
+
 
 # -----------------------------
 # Interactive selection
@@ -148,7 +167,8 @@ fi
 # Compute filenames
 # -----------------------------
 base_name=$(basename "$input_file" ".pdf")
-output_file="${base_name}_s.pdf"
+dir_name=$(dirname "$input_file") # get input file directory
+output_file="{$dir_name}/${base_name}_s.pdf" # by default saves it side by side
 
 if $override; then
     output_file="$input_file"
@@ -171,4 +191,11 @@ final_size=$(du -m "$output_file" | cut -f1)
 echo "Original size: ${initial_size} MB"
 echo "Compressed size: ${final_size} MB"
 echo "Size difference: $(($final_size - $initial_size)) MB"
+
+# If relocate_dir is set, move the compressed file there
+if [[ -n "$relocate_dir" ]]; then
+    echo "Relocating $output_file to $relocate_dir"
+    mv "$output_file" "$relocate_dir/"
+    output_file="$relocate_dir/$output_file"
+fi
 
