@@ -20,6 +20,37 @@ if ! command -v gs >/dev/null 2>&1; then
     exit 1
 fi
 
+show_help() {
+    cat << EOF
+Usage: $(basename "$0") [options] <file.pdf>
+
+Options:
+  -i, --interactive       Select compression quality interactively
+  -h, --prepress, --high  Highest quality (prepress) [default]
+  -g, --printer, --good   Good quality (printer)
+  -m, --ebook, --medium   Medium quality (ebook)
+  -l, --low, --screen     Lowest quality (screen)
+  -o, --override          Replace the original file instead of creating a copy
+  --help                  Show this help message and exit
+
+Examples:
+  $(basename "$0") file.pdf
+  $(basename "$0") --ebook file.pdf
+  $(basename "$0") -i file.pdf
+  $(basename "$0") -g -o file.pdf
+EOF
+    exit 0
+}
+
+# -----------------------------
+# Check for --help
+# -----------------------------
+for arg in "$@"; do
+    if [[ "$arg" == "--help" ]]; then
+        show_help
+    fi
+done
+
 
 # -----------------------------
 # Parse flags
