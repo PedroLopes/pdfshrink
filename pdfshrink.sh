@@ -30,7 +30,7 @@ Options:
   -g, --printer, --good   Good quality (printer)
   -m, --ebook, --medium   Medium quality (ebook)
   -l, --low, --screen     Lowest quality (screen)
-  -o, --override          Replace the original file instead of creating a copy
+  -o, --override          Replace the original file instead of creating a copy (mutually exclusive with --relocate)
   -r, --relocate <dir>    Move the compressed file to a specified directory (otherwise file is saved in same directory as the target file)
   --help                  Show this help message and exit
 
@@ -170,10 +170,6 @@ base_name=$(basename "$input_file" ".pdf")
 dir_name=$(dirname "$input_file") # get input file directory
 output_file="${dir_name}/${base_name}_s.pdf" # by default saves it side by side
 
-if $override; then
-    output_file="$input_file"
-fi
-
 # -----------------------------
 # Compress PDF using Ghostscript
 # -----------------------------
@@ -198,4 +194,25 @@ if [[ -n "$relocate_dir" ]]; then
     mv "$output_file" "$relocate_dir/"
     output_file="$relocate_dir/$output_file"
 fi
+
+# Safer to do the override check at the end
+if $override; then
+    if $relocate; then
+	    echo -e "  (Warning: both --override and --relocate were provided.\n  However, this will not override the file as these options are mutually exclusive.\n  As such, --relocate takes priority to prevent errors and the file was relocated.)"
+
+    else
+	    echo -n "Do you want to overwrite the original file ($input_file) with the compressed version? [y/N]: "
+	    read answer
+	    case "$answer" in
+		[Yy]* )
+		    mv -f "$output_file" "$input_file"
+		    echo "Original file overwritten."
+		    ;;
+		* )
+		    echo "Original file left unchanged. Compressed file saved as $output_file"
+		    ;;
+	    esac
+   fi
+fi
+
 
