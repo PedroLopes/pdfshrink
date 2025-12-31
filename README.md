@@ -1,12 +1,12 @@
 # pdfshrink
 
-`PDFShrink` is a macOS and Linux-friendly Bash script for compressing PDF files with different quality options. It supports both interactive and flag-based workflows, optional file relocation, and safe overwrite handling.
+`pdfshrink` is a macOS and Linux-friendly Bash script for compressing PDF files with different quality options. It supports both interactive and flag-based workflows, optional file relocation, and safe overwrite handling.
 
 (This was based in this [old script](https://raw.githubusercontent.com/PedroLopes/bashscripting/refs/heads/master/pdfshrink.sh), which was probbaly based on someone's answer on stackoverflow. This updated version includes some minor improvements, such as an install script and more options.)
 
 ---
 
-## Features
+## Features and usage overview
 
 - Compress PDF files using Ghostscript (`gs`)
 - Saves compressed file side by side with original by default
@@ -14,7 +14,7 @@
   - Highest-quality (prepress) ``--high`` (``-h``) or ``--prepress`` (**default if no arguments**)
   - Good (printer) ``--good`` (``-g``) or ``--printer`` 
   - Medium (ebook) ``--medium`` (``-m``) or ``--ebook``
-  - Lowest (screen) ``--low`` (```-l``) or ``--screen``
+  - Lowest (screen) ``--low`` (``-l``) or ``--screen``
 - Interactive mode for selecting quality (`--interactive`)
 - Optional overwrite of original file (`--override` / `-o`) with user confirmation
 - Optional relocation of compressed file (`--relocate <dir>` / `-r <dir>`)
@@ -33,10 +33,10 @@
 
 
 ```bash
-git clone https://github.com/yourname/pdfshrink.git
-cd pdfshrink
-chmod +x install.sh
-./install.sh
+git clone https://github.com/yourname/pdfshrink.git;
+cd pdfshrink;
+chmod +x install.sh;
+./install.sh;
 ```
 
 If you are on Mac and have ``brew`` or on linux and have ``apt``, the installer will automatically install ``gs`` for you, if its missing.
