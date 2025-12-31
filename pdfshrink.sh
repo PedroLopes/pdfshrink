@@ -195,9 +195,11 @@ if [[ -n "$relocate_dir" ]]; then
     output_file="$relocate_dir/$output_file"
 fi
 
+
+
 # Safer to do the override check at the end
 if $override; then
-    if $relocate; then
+    if [[ -n "$relocate_dir" ]]; then
 	    echo -e "  (Warning: both --override and --relocate were provided.\n  However, this will not override the file as these options are mutually exclusive.\n  As such, --relocate takes priority to prevent errors and the file was relocated.)"
 
     else
@@ -214,5 +216,3 @@ if $override; then
 	    esac
    fi
 fi
-
-
