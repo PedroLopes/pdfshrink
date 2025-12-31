@@ -168,7 +168,7 @@ fi
 # -----------------------------
 base_name=$(basename "$input_file" ".pdf")
 dir_name=$(dirname "$input_file") # get input file directory
-output_file="{$dir_name}/${base_name}_s.pdf" # by default saves it side by side
+output_file="${dir_name}/${base_name}_s.pdf" # by default saves it side by side
 
 if $override; then
     output_file="$input_file"
